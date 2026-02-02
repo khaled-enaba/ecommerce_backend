@@ -2,13 +2,11 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ✅ Ensure upload folder exists
 const uploadDir = "uploads/products";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ✅ Storage config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -21,7 +19,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// ✅ File filter (images only)
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype.startsWith("image/")

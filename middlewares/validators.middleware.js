@@ -32,7 +32,6 @@ exports.validateRegister = (req, res, next) => {
     }
   }
 
-  // Validate phone (optional for now, but if provided must be valid)
   if (phone) {
     const phoneValidation = isValidPhone(phone);
     if (!phoneValidation.valid) {
@@ -51,7 +50,6 @@ exports.validateRegister = (req, res, next) => {
   next();
 };
 
-// Validation middleware for login
 exports.validateLogin = (req, res, next) => {
   const { email, password } = req.body;
   const errors = [];

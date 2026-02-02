@@ -54,15 +54,12 @@ exports.updateLoggedUser = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
     const { currentPassword, password, passwordConfirm } = req.body;
 
-    // 1) Get user and existing password
     const user = await User.findById(req.user._id).select("+password");
 
-    // 2) Check if current password is correct
     if (!(await user.correctPassword(currentPassword, user.password))) {
         return res.status(401).json({ message: "Incorrect current password" });
     }
 
-    // 3) Update password
     user.password = password;
     await user.save();
 

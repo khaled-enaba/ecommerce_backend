@@ -75,7 +75,7 @@ exports.getProducts = async (req, res) => {
     .populate("categoryId", "name slug")
     .populate("subCategoryId", "name slug");
 
-  // Sorting - supports multiple sort options
+  // Sorting 
   const sortObj = {};
   switch (sort) {
     case "newest":
@@ -85,13 +85,13 @@ exports.getProducts = async (req, res) => {
       sortObj.soldCount = -1;
       break;
     case "price-low":
-      sortObj.price = 1;  // Low to high
+      sortObj.price = 1; 
       break;
     case "price-high":
-      sortObj.price = -1;  // High to low
+      sortObj.price = -1; 
       break;
     default:
-      sortObj.createdAt = -1;  // Default: newest
+      sortObj.createdAt = -1; 
   }
 
   query = query.sort(sortObj);
@@ -122,18 +122,16 @@ exports.getProducts = async (req, res) => {
 
 /* ================= BEST SELLERS (HOME) - Uses getProducts with sort filter ================= */
 exports.getBestSellers = async (req, res) => {
-  // Delegates to getProducts with bestSeller sort and limit 8
   req.query.sort = "bestSeller";
-  req.query.limit = req.query.limit || 8;  // Default 8, but can be overridden
+  req.query.limit = req.query.limit || 8;  
   
   return exports.getProducts(req, res);
 };
 
 /* ================= NEW ARRIVALS (HOME) - Uses getProducts with sort filter ================= */
 exports.getNewArrivals = async (req, res) => {
-  // Delegates to getProducts with newest sort and limit 8
   req.query.sort = "newest";
-  req.query.limit = req.query.limit || 8;  // Default 8, but can be overridden
+  req.query.limit = req.query.limit || 8; 
   
   return exports.getProducts(req, res);
 };
@@ -164,7 +162,7 @@ exports.getProductById = async (req, res) => {
     return res.status(404).json({ message: "Product not found" });
   }
 
-  res.json({ data: product }); // Frontend expects { data: product } based on IProductRes type
+  res.json({ data: product }); 
 };
 
 exports.getProductBySlug = async (req, res) => {
@@ -201,7 +199,7 @@ exports.updateProduct = async (req, res) => {
   if (stock) product.stock = stock;
 
   if (req.file) {
-    product.image = [req.file.filename]; // Assuming replacing main image
+    product.image = [req.file.filename]; 
   }
 
   await product.save();

@@ -12,7 +12,6 @@ exports.addReview = async (req, res) => {
         userId: req.user._id,
         rating,
         comment,
-        // isApproved defaults to false, requiring admin OK
     });
     res.status(201).json({ message: "Review submitted for approval", data: review });
 };

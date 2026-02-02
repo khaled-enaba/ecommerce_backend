@@ -8,7 +8,6 @@ exports.createOrder = async (req, res) => {
   if (!cart || cart.items.length === 0)
     return res.status(400).json({ message: "Cart is empty" });
 
-  // Check stock and prepare items
   const items = [];
   let totalAmount = 0;
 
@@ -18,7 +17,7 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: `Insufficient stock for ${product.name}` });
     }
 
-    // Decrease stock
+    
     product.stock -= item.quantity;
     product.soldCount += item.quantity;
     await product.save();
@@ -60,7 +59,6 @@ exports.getAllOrders = async (req, res) => {
 };
 
 exports.cancelOrder = async (req, res) => {
-  // Allow admin to cancel any order, users can only cancel their own
   const query = req.user.role === 'ADMIN'
     ? { _id: req.params.orderId }
     : { _id: req.params.orderId, user: req.user._id };
@@ -70,13 +68,11 @@ exports.cancelOrder = async (req, res) => {
   if (!order) return res.status(404).json({ message: "Order not found" });
   if (order.status === 'cancelled') return res.status(400).json({ message: "Order already cancelled" });
 
-  // Only allow cancellation of pending orders
   if (order.status !== 'pending') {
     return res.status(400).json({ message: `Cannot cancel ${order.status} order` });
   }
 
   try {
-    // Increase stock back
     const Product = require("../models/product.model");
     for (const item of order.items) {
       await Product.findByIdAndUpdate(item.product, {
@@ -99,7 +95,6 @@ exports.updateOrderStatus = async (req, res) => {
 
   if (!order) return res.status(404).json({ message: "Order not found" });
 
-  // Simple validation for state transitions could be added here
   order.status = status;
   await order.save();
 
@@ -130,7 +125,7 @@ exports.returnOrder = async (req, res) => {
 
 exports.handleReturnRequest = async (req, res) => {
   const { orderId } = req.params;
-  const { status, response } = req.body; // status: 'returned' (approve) or 'return-rejected' (reject)
+  const { status, response } = req.body; 
 
   try {
     const order = await Order.findById(orderId);
@@ -149,8 +144,7 @@ exports.handleReturnRequest = async (req, res) => {
         });
       }
     } else if (status === 'return-rejected') {
-      // Reject: No stock change, maybe revert to 'received' or stay 'return-rejected'
-      // keeping as return-rejected is clearer for history
+     
     } else {
       return res.status(400).json({ message: "Invalid status for return handling" });
     }

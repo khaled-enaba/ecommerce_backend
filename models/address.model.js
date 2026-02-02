@@ -12,7 +12,7 @@ const addressSchema = new mongoose.Schema(
 
     addressLine: { type: String, required: true },
     city: { type: String, required: true },
-    phone: { type: String }, // Optional phone number for this address
+    phone: { type: String }, 
 
     isDefault: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },

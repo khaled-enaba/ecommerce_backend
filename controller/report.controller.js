@@ -15,7 +15,6 @@ exports.getSalesReport = async (req, res) => {
             if (endDate) filter.createdAt.$lte = new Date(endDate);
         }
 
-        // Use aggregation for revenue calculation
         const stats = await Order.aggregate([
             { $match: filter },
             {
@@ -114,7 +113,7 @@ exports.getUserStats = async (req, res) => {
                 totalUsers,
                 newUsersCount,
                 usersByRole,
-                users: usersList // Added users list for the report table
+                users: usersList 
             },
         });
     } catch (error) {
@@ -161,7 +160,6 @@ exports.getDashboardOverview = async (req, res) => {
         const totalProducts = await Product.countDocuments({ isDeleted: false });
         const totalOrders = await Order.countDocuments();
 
-        // Optimized revenue calculation
         const revenueResult = await Order.aggregate([
             {
                 $group: {
@@ -209,14 +207,12 @@ exports.getOrdersByStatus = async (req, res) => {
 /* ================= DASHBOARD - SALES TRENDS ================= */
 exports.getSalesTrends = async (req, res) => {
     try {
-        // تحويل القيمة لرقم لضمان دقة الحساب
         const days = parseInt(req.query.days) || 7;
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
 
         const trends = await Order.aggregate([
             {
-                // إزالة الـ backslashes الزائدة
                 $match: {
                     createdAt: { $gte: startDate },
                     status: { $ne: 'cancelled' }
@@ -231,7 +227,7 @@ exports.getSalesTrends = async (req, res) => {
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { _id: 1 } } // الترتيب من الأقدم للأحدث
+            { $sort: { _id: 1 } }
         ]);
 
         res.json({
@@ -246,22 +242,18 @@ exports.getSalesTrends = async (req, res) => {
 /* ================= DASHBOARD - STOCK ALERTS ================= */
 exports.getStockAlerts = async (req, res) => {
     try {
-        // تحويل النص إلى رقم لضمان صحة الاستعلام
         const threshold = parseInt(req.query.threshold) || 10;
 
-        // 1. المنتجات الحرجة: المخزون أقل من 5 (شامل الصفر)
         const criticalProducts = await Product.find({
             isDeleted: false,
-            stock: { $lt: 5 } // أزلنا $gt: 0 لتشمل المنتجات التي نفدت تماماً
+            stock: { $lt: 5 } 
         }).select('name stock price soldCount').limit(5);
 
-        // 2. منتجات التحذير: المخزون بين 5 والحد المطلوب (threshold)
         const warningProducts = await Product.find({
             isDeleted: false,
             stock: { $gte: 5, $lt: threshold }
         }).select('name stock price soldCount').limit(3);
 
-        // دمج النتائج مع تحديد درجة الخطورة
         const alerts = [
             ...criticalProducts.map(p => ({
                 id: p._id,
@@ -329,7 +321,6 @@ exports.getPendingReviews = async (req, res) => {
 /* ================= DASHBOARD - UNREAD MESSAGES ================= */
 exports.getUnreadMessages = async (req, res) => {
     try {
-        // For now, return empty array - implement when message model is added
         res.json({
             data: []
         });
@@ -386,16 +377,14 @@ exports.getStockAlerts = async (req, res) => {
     try {
         const threshold = parseInt(req.query.threshold) || 10;
 
-        // البحث عن المنتجات الحرجة (أقل من 5 قطع)
         const criticalProducts = await Product.find({ 
             isDeleted: false, 
             stock: { $lt: 5 } 
         })
         .select('name stock price soldCount')
-        .sort({ stock: 1 }) // الترتيب من الأقل مخزوناً
+        .sort({ stock: 1 }) 
         .limit(5);
 
-        // البحث عن منتجات التحذير (بين 5 والـ threshold)
         const warningProducts = await Product.find({ 
             isDeleted: false, 
             stock: { $gte: 5, $lt: threshold } 
@@ -403,7 +392,6 @@ exports.getStockAlerts = async (req, res) => {
         .select('name stock price soldCount')
         .limit(3);
 
-        // دمج النتائج بتنسيق موحد للـ Frontend
         const alerts = [
             ...criticalProducts.map(p => ({
                 id: p._id,

@@ -17,7 +17,6 @@ const subCategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// prevent duplicate names in same category
 subCategorySchema.index({ categoryId: 1, name: 1 }, { unique: true });
 
 module.exports = mongoose.model("SubCategory", subCategorySchema);
