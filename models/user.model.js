@@ -57,6 +57,6 @@ module.exports = mongoose.model("User", userSchema);
  EMAIL: user@test.com
   PASSWORD: u123456
 
-  email:
-  pas:
+  email:sameh@test.com
+  pas:s123456
   */
