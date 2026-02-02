@@ -1,0 +1,214 @@
+// ==========================================
+// API TEST CASES - Product Endpoints
+// ==========================================
+// Run these in Postman or curl to test the API
+
+// Test 1: Get All Products (Default)
+// URL: http://localhost:4000/api/products
+// Method: GET
+// Expected: 200 OK, returns products sorted by newest, limit 20
+
+// Test 2: Get New Arrivals (Home Page)
+// URL: http://localhost:4000/api/products?sort=newest&limit=8
+// Method: GET
+// Expected: 200 OK, returns latest 8 products
+
+// Test 3: Get Best Sellers (Home Page)
+// URL: http://localhost:4000/api/products?sort=bestSeller&limit=8
+// Method: GET
+// Expected: 200 OK, returns 8 most sold products
+
+// Test 4: Get Newest Arrivals via Shortcut
+// URL: http://localhost:4000/api/products/new-arrivals
+// Method: GET
+// Expected: 200 OK, same as Test 2
+
+// Test 5: Get Best Sellers via Shortcut
+// URL: http://localhost:4000/api/products/best-sellers
+// Method: GET
+// Expected: 200 OK, same as Test 3
+
+// Test 6: Sort by Price (Low to High)
+// URL: http://localhost:4000/api/products?sort=price-low&limit=20
+// Method: GET
+// Expected: 200 OK, products sorted by price ascending
+
+// Test 7: Sort by Price (High to Low)
+// URL: http://localhost:4000/api/products?sort=price-high&limit=20
+// Method: GET
+// Expected: 200 OK, products sorted by price descending
+
+// Test 8: Filter by Category
+// URL: http://localhost:4000/api/products?category=<CATEGORY_ID>&limit=20
+// Method: GET
+// Expected: 200 OK, products in specified category
+
+// Test 9: Filter by Price Range
+// URL: http://localhost:4000/api/products?minPrice=100&maxPrice=500&limit=20
+// Method: GET
+// Expected: 200 OK, products within price range
+
+// Test 10: Search Products
+// URL: http://localhost:4000/api/products?search=iphone&limit=20
+// Method: GET
+// Expected: 200 OK, products matching search query
+
+// Test 11: Complex Filter (Multiple Filters)
+// URL: http://localhost:4000/api/products?sort=bestSeller&category=<CATEGORY_ID>&minPrice=100&maxPrice=500&limit=12
+// Method: GET
+// Expected: 200 OK, best sellers in category with price range
+
+// Test 12: Pagination
+// URL: http://localhost:4000/api/products?page=2&limit=20
+// Method: GET
+// Expected: 200 OK, second page of 20 products
+
+// Test 13: Get Product by Slug
+// URL: http://localhost:4000/api/products/<PRODUCT_SLUG>
+// Method: GET
+// Expected: 200 OK, single product data
+
+// Test 14: Get Product by ID
+// URL: http://localhost:4000/api/products/id/<PRODUCT_ID>
+// Method: GET
+// Expected: 200 OK, single product data
+
+// Test 15: Invalid Sort Parameter (Should default to newest)
+// URL: http://localhost:4000/api/products?sort=invalid
+// Method: GET
+// Expected: 200 OK, defaults to newest sort
+
+// ==========================================
+// CURL TEST COMMANDS
+// ==========================================
+
+// 1. Get new arrivals
+// curl "http://localhost:4000/api/products?sort=newest&limit=8"
+
+// 2. Get best sellers
+// curl "http://localhost:4000/api/products?sort=bestSeller&limit=8"
+
+// 3. Get with category filter
+// curl "http://localhost:4000/api/products?category=CATEGORY_ID&limit=20"
+
+// 4. Get with price filter
+// curl "http://localhost:4000/api/products?minPrice=100&maxPrice=500"
+
+// 5. Search
+// curl "http://localhost:4000/api/products?search=phone"
+
+// 6. Complex filter
+// curl "http://localhost:4000/api/products?sort=bestSeller&category=CAT_ID&minPrice=100&maxPrice=500&limit=12"
+
+// ==========================================
+// EXPECTED RESPONSE FORMAT
+// ==========================================
+
+/*
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "Product Name",
+      "slug": "product-name",
+      "description": "Product description",
+      "price": 99.99,
+      "categoryId": {
+        "_id": "507f1f77bcf86cd799439012",
+        "name": "Electronics",
+        "slug": "electronics"
+      },
+      "subCategoryId": {
+        "_id": "507f1f77bcf86cd799439013",
+        "name": "Phones",
+        "slug": "phones"
+      },
+      "image": ["product-image.jpg"],
+      "stock": 50,
+      "soldCount": 15,
+      "isActive": true,
+      "isSummer": false,
+      "createdAt": "2025-01-15T10:30:00.000Z",
+      "updatedAt": "2025-01-20T14:22:00.000Z"
+    }
+  ],
+  "pagination": {
+    "total": 120,
+    "page": 1,
+    "limit": 20,
+    "pages": 6
+  }
+}
+*/
+
+// ==========================================
+// TROUBLESHOOTING
+// ==========================================
+
+// Issue: Empty products array
+// Solution: Check if products exist in database
+// Query: db.products.find({ isDeleted: false, isActive: true })
+
+// Issue: Incorrect sorting
+// Solution: Verify sort parameter value (newest, bestSeller, price-low, price-high)
+
+// Issue: Pagination not working
+// Solution: Use both page and limit parameters
+// Example: ?page=2&limit=20
+
+// Issue: Filters not applied
+// Solution: Ensure filter parameter names match exactly
+// - category (not categoryId)
+// - subCategory (not subCategoryId)
+// - minPrice, maxPrice
+// - search
+
+// ==========================================
+// POSTMAN COLLECTION TEMPLATE
+// ==========================================
+
+/*
+{
+  "info": {
+    "name": "Product API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "New Arrivals",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:4000/api/products?sort=newest&limit=8",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "products"],
+          "query": [
+            { "key": "sort", "value": "newest" },
+            { "key": "limit", "value": "8" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Best Sellers",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:4000/api/products?sort=bestSeller&limit=8",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "products"],
+          "query": [
+            { "key": "sort", "value": "bestSeller" },
+            { "key": "limit", "value": "8" }
+          ]
+        }
+      }
+    }
+  ]
+}
+*/
