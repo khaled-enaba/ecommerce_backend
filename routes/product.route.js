@@ -8,24 +8,14 @@ const { authorize } = require('../middlewares/role.middleware');
 
 
 /* ================= MAIN PRODUCTS ENDPOINT (UNIFIED) ================= */
-/* 
-  GET /products - Get all products with filters and sorting
-  Query params:
-    - sort: 'newest' | 'bestSeller' | 'price-low' | 'price-high' (default: newest)
-    - limit: number (default: 20, can be 8 for home page)
-    - category: categoryId
-    - subCategory: subCategoryId
-    - minPrice, maxPrice: price range
-    - search: search by name/description
-    - page: page number (default: 1)
-*/
+ 
+
 router.get('/', getProducts);
 router.post('/', authenticate, authorize('ADMIN'), upload.single('image'), createProduct);
 router.put('/:id', authenticate, authorize('ADMIN'), upload.single('image'), require('../controller/product.controller').updateProduct);
 router.delete('/:id', authenticate, authorize('ADMIN'), deleteProduct);
 
 /* ================= HOME PAGE SHORTCUTS ================= */
-/* These use getProducts with predefined sort and limit */
 router.get("/best-sellers", getBestSellers);
 router.get("/new-arrivals", getNewArrivals);
 

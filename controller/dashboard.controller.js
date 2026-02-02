@@ -1,7 +1,7 @@
 const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 
-/* ================= DASHBOARD - ORDERS BY STATUS ================= */
+/* ================= DASHBOARD ================= */
 exports.getOrdersByStatus = async (req, res) => {
     try {
         const pending = await Order.countDocuments({ status: 'pending' });
@@ -22,7 +22,6 @@ exports.getOrdersByStatus = async (req, res) => {
     }
 };
 
-/* ================= DASHBOARD - SALES TRENDS ================= */
 exports.getSalesTrends = async (req, res) => {
     try {
         const days = req.query.days || 7;
@@ -56,7 +55,6 @@ exports.getSalesTrends = async (req, res) => {
     }
 };
 
-/* ================= DASHBOARD - STOCK ALERTS ================= */
 exports.getStockAlerts = async (req, res) => {
     try {
         const threshold = req.query.threshold || 10;
@@ -98,7 +96,6 @@ exports.getStockAlerts = async (req, res) => {
     }
 };
 
-/* ================= DASHBOARD - PENDING ORDERS ================= */
 exports.getPendingOrders = async (req, res) => {
     try {
         const orders = await Order.find({ status: 'pending' })
@@ -115,7 +112,6 @@ exports.getPendingOrders = async (req, res) => {
     }
 };
 
-/* ================= DASHBOARD - PENDING REVIEWS ================= */
 exports.getPendingReviews = async (req, res) => {
     try {
         const Review = require('../models/review.model');
@@ -133,10 +129,8 @@ exports.getPendingReviews = async (req, res) => {
     }
 };
 
-/* ================= DASHBOARD - UNREAD MESSAGES ================= */
 exports.getUnreadMessages = async (req, res) => {
     try {
-        // For now, return empty array - implement when message model is added
         res.json({
             data: []
         });

@@ -21,14 +21,14 @@ exports.login = async (req, res) => {
     return res.status(400).json({ message: "Email and password required" });
   }
 
-  // 🔴 MUST SELECT PASSWORD
+  // SELECT PASSWORD
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  // 🔴 PASS BOTH ARGUMENTS
+  //PASS BOTH ARGUMENTS
   const isMatch = await user.correctPassword(password, user.password);
 
   if (!isMatch) {

@@ -43,7 +43,6 @@ exports.createSubCategory = async (req, res) => {
   res.status(201).json(subCategory);
 };
 
-/* GET SubCategories by Category (POPULATE) */
 exports.getSubCategoriesByCategory = async (req, res) => {
   const { categoryId } = req.params;
 
