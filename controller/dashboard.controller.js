@@ -8,13 +8,21 @@ exports.getOrdersByStatus = async (req, res) => {
         const processing = await Order.countDocuments({ status: 'preparing' });
         const completed = await Order.countDocuments({ status: 'received' });
         const cancelled = await Order.countDocuments({ status: 'cancelled' });
+        const received = await Order.countDocuments({ status: 'received' });
+        const returned = await Order.countDocuments({ status: 'returned' });
+        const returnRequested = await Order.countDocuments({ status: 'return-requested' });
+        const returnRejected = await Order.countDocuments({ status: 'return-rejected' });
 
         res.json({
             data: {
                 pending,
                 processing,
                 completed,
-                cancelled
+                cancelled,
+                received,
+                returned,
+                returnRejected
+
             }
         });
     } catch (error) {
